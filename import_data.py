@@ -9,7 +9,7 @@ from models import (
     Season,
 )
 
-DATA_PATH: str = "formula_1/data"
+DATA_PATH: str = "data"
 
 CIRCUITS: dict[str, Driver] = {}
 CONSTRUCTORS: dict[str, Driver] = {}
@@ -128,7 +128,7 @@ def import_drivers(year: int) -> dict:
         return {}
     
 
-years: list[int] = [2018]# [2017, 2018, 2019]
+years: list[int] = [2016]# [2017, 2018, 2019]
 # [2020, 2021] #, 2022, 2023]
 for year in years:
     DRIVERS = import_drivers(year)
