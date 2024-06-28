@@ -28,10 +28,8 @@ def import_season(year: int) -> Season:
         season.rounds = int(response_data["total"])
         season.races = []
         for round in range(1, season.rounds + 1):
-
-            current_race = import_race(year, round)
-            season.races.extend(
-                current_race
+            season.races.append(
+                import_race(year, round)
             )
 
         return season
@@ -43,36 +41,31 @@ def import_season(year: int) -> Season:
 
 def import_race(year: int, round: int) -> Race:
     try:
-        races: list[Race] = []
+        race: Race = Race()
         file_path: str = f"{DATA_PATH}/{year}/{year}_{round}.json"
         if os.path.isfile(file_path):
             with open(file_path, "r") as file:
                 response = json.loads(file.read())
         
         response_data: dict = response["MRData"]
-        
-        for data in response_data["RaceTable"]["Races"]:
-            race: Race = Race()
-            race.circuit = CIRCUITS[data["Circuit"]["circuitId"]]
-            race.date = data.get("date", "")
-            race.round = data.get("round", "")
-            results = []
-            for lap_data in data["Results"]:
-                results.append(
-                    RacePosition(
-                        DRIVERS[lap_data["Driver"]["driverId"]],
-                        CONSTRUCTORS[lap_data["Constructor"]["constructorId"]],
-                        lap_data,
-                    )
+        data: dict = response_data["RaceTable"]["Races"][0]
+        race.circuit = CIRCUITS[data["Circuit"]["circuitId"]]
+        race.date = data.get("date", "")
+        race.round = data.get("round", "")
+        results = []
+        for lap_data in data["Results"]:
+            results.append(
+                RacePosition(
+                    DRIVERS[lap_data["Driver"]["driverId"]],
+                    CONSTRUCTORS[lap_data["Constructor"]["constructorId"]],
+                    lap_data,
                 )
+            )
             race.positions = results
-            races.append(race)
 
-        return races
-    except Exception as e:
-        import traceback
-        traceback.print_exc(e)
-        return []
+        return race
+    except Exception:
+        return race
 
 def import_constructors(year: int) -> dict:
     try:
@@ -128,8 +121,7 @@ def import_drivers(year: int) -> dict:
         return {}
     
 
-years: list[int] = [2016]# [2017, 2018, 2019]
-# [2020, 2021] #, 2022, 2023]
+years: list[int] = [2016] #, 2022, 2023]
 for year in years:
     DRIVERS = import_drivers(year)
     CONSTRUCTORS = import_constructors(year)
@@ -150,22 +142,27 @@ for year in years:
     # print("")
 
     # print(season)
-    
-    print(season.races)
-    for race in season.races:
-        print("")
-        print("Race: " + race.circuit.name)
-        for data in race.classification():
-            print(data["driver"] + " - " + str(data["position"]) + " - " + data["time"])
+    # print(season.races)
+    # for race in season.races:
+    #     print("")
+    #     print("Race: " + race.circuit.name)
+    #     for data in race.classification():
+    #         print(data)
 
-
+    print("0" * 50)
+    print(CONSTRUCTORS)
+    print("-" * 50)
+    print(CIRCUITS)
+    print("0" * 50)
 
     print("=" * 50)
     print("Classification " + str(year))
     print("=" * 50)
-    classification = season.classification(DRIVERS)
-    for data in classification:
-        print(data["driver"] + " - " + str(data["points"]))
+    # classification = season.driver_classification(DRIVERS)
+    for data in season.constructor_classification(CONSTRUCTORS):
+        print(data["constructor"] + " - " + str(data["points"]))
+
+    
 
     # print(season.get_races("HAM"))
 # print(season.total_points("HAM"))

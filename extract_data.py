@@ -133,7 +133,7 @@ def create_constructor_file(year: int) -> bool:
     _create_file(year, "constructor")
     
 
-years: list[int] = [2016]
+years: list[int] = [2015]
 for year in years:
     print(create_season_file(year))
     # os.makedirs("formula_1/data/2009")
