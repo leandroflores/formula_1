@@ -18,3 +18,17 @@ O segundo é adicionar as alterações no repositório:
 git add .
 ```
 
+O terceiro comando é para comitar as alterações:
+```shell
+git commit -m "<comment>"
+```
+
+O quarto comando é por adicionar as alteração para o repositório:
+```shell
+git remote add origin https://github.com/leandroflores/formula1.git
+```
+
+O último comando é para mandar as alterações do repositório:
+```shell
+git push -u origin
+```
